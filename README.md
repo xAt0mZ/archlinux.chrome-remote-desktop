@@ -19,7 +19,7 @@ makepkg -csf
 pacman -U ./chrome-remote-desktop-[...].pkg.tar.zst
 ```
 
-If you encounter any error during packaging (like invalid hunk), see **Handling issues**
+If you encounter any error during packaging (like invalid hunk), see **Additional configuration**
 
 ## Update
 
@@ -59,10 +59,9 @@ Host ready to receive connections.
 Log file: /tmp/chrome_remote_desktop
 ```
 
------
-## Additional Configuration
+## Additional configuration
 
-The additional configuration will allow you to connect to an existing session instead of creating a new one when connecting.
+In case you want to re-use your existing session or you encounter a message like "unable to find display :20", see the following instructions
 
 1. Find what display number X is using
 
@@ -92,11 +91,11 @@ CRD status: STOPPED
 
 5. Take a backup of `/opt/google/chrome-remote-desktop/chrome-remote-desktop`
 
-6. Download the (patched)[https://gist.githubusercontent.com/victorbrca/7bd9b351ccf2788a86aa94d296f4d48c/raw/7948453c8da09965b6f23280a1dbf86c432ea4c9/chrome-remote-desktop] `/opt/google/chrome-remote-desktop/chrome-remote-desktop` to the same location, or follow the instructions to manually modify your file (here)[https://gist.github.com/nightuser/2ec1b91a66ec33ef0a0a67b6c570eb40#file-use_existing_session-patch].
+6. Download the [patched](https://gist.githubusercontent.com/victorbrca/7bd9b351ccf2788a86aa94d296f4d48c/raw/7948453c8da09965b6f23280a1dbf86c432ea4c9/chrome-remote-desktop) `/opt/google/chrome-remote-desktop/chrome-remote-desktop` to the same location, or follow the instructions to manually modify your file [here](https://gist.github.com/nightuser/2ec1b91a66ec33ef0a0a67b6c570eb40#file-use_existing_session-patch).
 
-Note: The patched version was tested with chrome-remote-desktop 81.0.4044.60-1
+/!\ Note: The patched version was tested with chrome-remote-desktop 81.0.4044.60-1
 
-7. Start the agent with crd --start so you can see verbose output. You should receive a confirmation when it starts
+7. Start the agent with `crd --start` so you can see verbose output. You should receive a confirmation when it starts
 
 ```sh
 $ crd --start
