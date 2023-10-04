@@ -5,8 +5,11 @@
 # Contributor: Mateus Rodrigues Costa <charles [dot] costar [at] gmail [dot] com>
 
 pkgname=chrome-remote-desktop
-pkgver=116.0.5845.10
 pkgrel=1
+latest_info=$(curl -qs https://dl.google.com/linux/chrome-remote-desktop/deb/dists/stable/main/binary-amd64/Packages)
+pkgver=$(echo "${latest_info}" | grep "^Version" | awk '{print $2}')
+pkgsum=$(echo "${latest_info}" | grep "^SHA256" | awk '{print $2}')
+pkgremotefile=$(echo "${latest_info}" | grep "^Filename" | awk '{print $2}')
 pkgdesc="Access other computers or allow another user to access your computer securely over the Internet"
 arch=("x86_64")
 url="https://remotedesktop.google.com"
@@ -14,20 +17,27 @@ license=("BSD")
 depends=("gtk3" "libutempter" "libxss" "nss" "python-packaging" "python-psutil" "python-pyxdg" "xf86-video-dummy" "xorg-server-xvfb" "xorg-setxkbmap" "xorg-xauth" "xorg-xdpyinfo" "xorg-xrandr")
 install="${pkgname}.install"
 source=(
-  "${pkgname}-${pkgver}.deb::https://dl.google.com/linux/${pkgname}/deb/pool/main/${pkgname:0:1}/${pkgname}/${pkgname}_${pkgver}_amd64.deb"
+  # "${pkgname}-${pkgver}.deb::https://dl.google.com/linux/${pkgname}/deb/pool/main/c/${pkgname}/${pkgname}_${pkgver}_amd64.deb"
+  "${pkgname}-${pkgver}.deb::https://dl.google.com/linux/${pkgname}/deb/${pkgremotefile}"
   "${pkgname}.service"
   "pamrule"
   "crd"
-  "xdg-base-directory.patch"
+  "xorg-binary-path.patch"
+  "use-existing-session.patch"
 )
 sha256sums=(
-  "84396947d787cbe90073e944c272856871086c2671d82ac59f6ee9f460476459"
+  "${pkgsum}"
   "e5da5ae89b5bc599f72f415d1523341b25357931b0de46159fce50ab83615a4b"
   "fcc38269eb1cc902abff9688eda9377a22367e39b9f111f87c0dd8e77adb82e2"
   "021110f49d465294517eec92eeb24ebca41e264ef33cbdda78732add1f269d02"
-  "993cff7024be6c4e3b2c0f84287adb51711a30c7dd965bb5b8687980f496e1a5"
+  "90bcfab85a87cfa6d038a55c556206f74b22eb03644ea51f46732cfb27679963"
+  "9a4029669ae5d166bad3bdaff7331af2b0a6e0a8ce87cf39fe83c54da0f47c32"
 )
 
+# Direct download of latest version
+# https://dl.google.com/linux/direct/chrome-remote-desktop_current_amd64.deb
+
+# Retrieve version and sha256sum
 # curl -qs https://dl.google.com/linux/chrome-remote-desktop/deb/dists/stable/main/binary-amd64/Packages | grep "^Version\|^SHA256" | awk '{print $2}'
 
 prepare() {
@@ -40,8 +50,9 @@ prepare() {
   rm -R "${srcdir}/etc/init.d"
   rm -R "${srcdir}/etc/pam.d"
 
-  # Fix problem with missing import xdg.BaseDirectory, fixing xorg_binary location
-  patch -Np1 -i "${srcdir}/xdg-base-directory.patch"
+  # Fix xorg_binary location
+  patch -Np1 -i "${srcdir}/xorg-binary-path.patch"
+  patch -Np1 -i "${srcdir}/use-existing-session.patch"
 }
 
 package() {

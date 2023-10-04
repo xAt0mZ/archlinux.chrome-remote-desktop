@@ -146,31 +146,31 @@ fi
 
 case $1 in
 
---status)
+--status|status)
   status
   ;;
 
---restart)
+--restart|restart)
   restart
   ;;
 
---reload)
+--reload|reload)
   reload
   ;;
 
---stop)
+--stop|stop)
   stop
   ;;
 
---start)
+--start|start)
   start
   ;;
 
---setup)
+--setup|setup)
   setup
   ;;
 
---help|-h)
+--help|-h|help)
   help
   ;;
 
